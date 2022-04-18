@@ -62,9 +62,9 @@ def network_parallel(data_dir, J, L, class_names, s2, n_cores, im_size, layer1_o
                 # Run network
                 output_parallel, output_per, output_quart = s2_Net(scattering(data))
                 s2['name'].append(label)
-                s2['par'].append(output_parallel)
+                s2['par'][str(output_parallel[0])] = output_parallel[1]
 
-    s2['par'] = torch.tensor(s2['par'])
+    # s2['par'] = torch.tensor(s2['par'])
 
-    return output_parallel.numpy()
+    return output_parallel[1].numpy()
 

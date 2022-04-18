@@ -56,4 +56,4 @@ class s2Net(nn.Module):
         scat_coeffs_quart_order_2 = sti[self.quarter_layer2_index,] / sti[self.quarter_layer1_index,]
 
         # Return normalized s2 coefficient - activation
-        return scat_coeffs_parallel_order_2, scat_coeffs_per_order_2, scat_coeffs_quart_order_2
+        return [self.par_layer2_index, scat_coeffs_parallel_order_2], [self.per_layer2_index, scat_coeffs_per_order_2], [self.quarter_layer2_index, scat_coeffs_quart_order_2]
