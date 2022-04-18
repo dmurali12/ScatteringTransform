@@ -1,18 +1,7 @@
-import ScatteringTransCurr as ST
+import parallel_function as PAST
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import torch.optim
-from torchvision import datasets, transforms
-from kymatio.torch import Scattering2D
-import torchvision.transforms.functional as functional
-import numpy as np
-from kymatio.torch import Scattering2D
-from PIL import Image
-import os, re, sys
-import umap
-
-import matplotlib.pyplot as plt
 
 class_names = ['IM', ]  # class of image ('apple, orange, etc')
 s2 = {'name': [], 'par': [], 'per': [], 'quart': []}
@@ -22,19 +11,20 @@ im_size = (256, 256)
 J = 5  # number of scales
 L = 8  # number of orientations
 
-dirs_I = ['45']
-j_I = {}
+# List for arrays
+dirs_I = ['90']
 
-# j_array for I
+# Add to dictionary of arrays
+orientation_I = {}
+
 for ele in dirs_I:
-    data_dir = '/Users/dixshetamuralikrishnan/Documents/McCloskey SP22/ConcaveSimple/I_{}'.format(ele)
-    j_array = []
-    for j1 in range(J):
-        data = ST.s2Net_j(J, L, j1)
-        parallel = ST.network_parallel(data_dir, J, L, class_names, s2, n_cores, im_size)
-        j1_average = parallel.mean()
-        j_array.append(j1_average)
-    j_I[j1] = j_array
+    data_dir = 'ConcaveSimple/I_{}'.format(ele)
+    l_array = []
+    for orientation_index in range(L):
+        parallel = PAST.network_parallel(data_dir, J, L, class_names, s2, n_cores, im_size, orientation_index)
+        unit_average = torch.mean(parallel)
+        l_array.append(unit_average)
+    orientation_I[int(ele)] = l_array
+    print(orientation_I)
 
-print(j_I)
 
