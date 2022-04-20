@@ -1,7 +1,6 @@
 import torch
 import torch.nn as nn
 
-
 # The coordinate (lx, jx, ly, jy) refers to (orientation of corr. first layer channel, scale of corr. first layer
 # channel, orientation of second layer channel, scale of channel). Given lx, find all parallel ly)
 

@@ -1,14 +1,12 @@
 # Goal of project: find how the second layer unit that activates to the same orientation as the corresponding first
 # layer unit responds to images that are optimized for specific features
 
-import parallel_function as PAST
-import visualize_parallel
-from visualize_parallel import plotting as plot
-import Run_dict as RD
 import matplotlib.pyplot as plt
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
+
+import Run_dict as Rd
+from visualize_parallel import plotting as plot
+
+from datetime import date
 
 # Go through images in folders ConcaveSimple/I_(45, 90, or 135).
 
@@ -29,8 +27,12 @@ direct = 'ConcaveSimple/I_{}'
 # that's selects for the orientation parallel to the first unit in the first layer
 orientation_I = {}
 
+f = open("Extracted_Data.txt")
+f.write(str(date.today()), '\n')
+
 for feature in dirs_I:
-    l_array = RD.run_parallel(feature, direct, L, J, class_names, s2, n_cores, im_size, orientation_I)
+    l_array = Rd.run_parallel(feature, direct, L, J, class_names, s2, n_cores, im_size, orientation_I)
+    f.write(str(l_array))
 
     plot(l_array, L)
     plt.show()
