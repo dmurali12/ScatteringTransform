@@ -66,5 +66,5 @@ def network_parallel(data_dir, J, L, class_names, s2, n_cores, im_size, layer1_o
 
     # s2['par'] = torch.tensor(s2['par'])
 
-    return output_parallel[1].numpy()
+    return output_parallel[1].numpy(), output_parallel[0] #[1] is the activation and [0] is the index
 
