@@ -4,19 +4,22 @@ import matplotlib.pyplot as plt
 import numpy as np
 from textwrap import wrap
 
-def plotting(array, L):
+def plotting(dict, L, orientation):
     fig = plt.figure()
 
-    x_array = range(1, L+1)
-    y_array = array
+    vals = range(L) # label this with orientation
+    x_array = [value * (180/L) for value in vals]
+
+    for feature in dict:
+        y_array = dict[feature]
 
     ax = fig.add_subplot(1, 1, 1)
     plt.plot(x_array, y_array, 'ro')
 
-    title = ax.set_title("\n".join(wrap("Activation of 2nd Layer Units Selective for Orientations Parallel to 1st "
+    title = ax.set_title("\n".join(wrap("Activation of 2nd Layer Units Selective for Orientations {} to 1st "
                                         "Layer Unit for Images "
-                                        "Optimized for {}".format(str(feature)))))
-    plt.xlabel("First Layer Unit")
+                                        "Optimized for {}".format(orientation, str(feature)))))
+    plt.xlabel("Orientation")
     plt.ylabel("Activation")
     plt.grid()
 
@@ -31,5 +34,5 @@ if __name__ == '__main__':
 
     for key in dict:
         feature = key
-        plotting(dict, feature, L)
+        plotting(dict[feature], L, feature)
         plt.show()

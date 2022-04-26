@@ -12,33 +12,17 @@ import os, re, sys
 import umap
 import ImageFolderWithPaths as IF
 import s2Net_orientation as network
+import data_setup as DS
 
 import matplotlib.pyplot as plt
 
 
-def network_parallel(data_dir, J, L, class_names, s2, n_cores, im_size, layer1_orientation):
-    # transform the data
-    data_transforms = {x: transforms.Compose([
-        transforms.Resize(im_size),
-        transforms.Grayscale(num_output_channels=1),
-        transforms.ToTensor(),
-        transforms.Normalize([0.5], [0.5]),
-    ]) for x in class_names
-    }
+# edges
+# perpendicular : junctions
 
-    image_datasets = {x: IF.ImageFolderWithPaths(data_dir,
-                                              data_transforms[x]) for x in class_names
-                      }
 
-    dataloaders = {x: torch.utils.data.DataLoader(image_datasets[x], batch_size=1,
-                                                  shuffle=False, num_workers=n_cores) for x in class_names
-                   }
-
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    dataset_sizes = {x: len(image_datasets[x]) for x in class_names}
-
-    # Define scattering transform
-    scattering = Scattering2D(J=J, shape=im_size, L=L, max_order=2)
+def network_run(data_dir, J, L, class_names, s2, n_cores, im_size, layer1_orientation):
+    dataloaders, device, dataset_sizes, scattering = DS.setup(im_size, class_names, data_dir, n_cores, J, L)
 
     # Move it to GPU if available
     if torch.cuda.is_available():
@@ -63,8 +47,10 @@ def network_parallel(data_dir, J, L, class_names, s2, n_cores, im_size, layer1_o
                 output_parallel, output_per, output_quart = s2_Net(scattering(data))
                 s2['name'].append(label)
                 s2['par'][str(output_parallel[0])] = output_parallel[1]
+                s2['per'][str(output_per[0])] = output_per[1]
+                s2['quart'][str(output_quart[0])] = output_quart[1]
 
     # s2['par'] = torch.tensor(s2['par'])
 
-    return output_parallel[1].numpy(), output_parallel[0] #[1] is the activation and [0] is the index
-
+    return output_parallel[1].numpy(), output_parallel[0], output_per[1].numpy(), output_per[0], output_quart[
+        1].numpy(), output_quart[0]  # [1] is the activation and [0] is the index
